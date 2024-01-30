@@ -2,6 +2,7 @@ package hello.core.beanfind;
 
 import hello.core.AppConfig;
 import hello.core.discount.DiscountPolicy;
+import hello.core.discount.FixDiscountPolicy;
 import hello.core.discount.RateDiscountPolicy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +46,20 @@ public class ApplicationExtendsFindTest {
     @Test
     @DisplayName("부모 타입으로 모두 조회")
     void findAllByParent() {
-        Map<String, RateDiscountPolicy> beansOfType = ac.getBeansOfType(RateDiscountPolicy.class);
+        Map<String, DiscountPolicy> beansOfType = ac.getBeansOfType(DiscountPolicy.class);
         assertThat(beansOfType.size()).isEqualTo(2);
         for (String key : beansOfType.keySet()) {
             System.out.println("key = " + key + " value = " + beansOfType.get(key));
+        }
+    }
+
+    @Test
+    @DisplayName("부모 타입으로 모두 조회 - Object")
+    // 스프링 내부의 bean까지 모두 조회됨
+    void findAllByObjectType() {
+        Map<String, Object> beans = ac.getBeansOfType(Object.class);
+        for (String key : beans.keySet()) {
+            System.out.println("key = " + key + " value = " + beans.get(key));
         }
     }
 
@@ -61,7 +72,7 @@ public class ApplicationExtendsFindTest {
 
         @Bean
         public DiscountPolicy fixDiscountPolicy() {
-            return new RateDiscountPolicy();
+            return new FixDiscountPolicy();
         }
     }
 }
